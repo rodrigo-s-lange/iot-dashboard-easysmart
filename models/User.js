@@ -2,7 +2,7 @@ const db = require('../config/database');
 const bcrypt = require('bcryptjs');
 
 class User {
-  static async create(username, email, password) {
+  static async create(tenantId, username, email, password, role = 'owner') {
     // Validações
     if (!username || !email || !password) {
       throw new Error('Username, email, and password are required');
@@ -28,11 +28,11 @@ class User {
     const hashedPassword = await bcrypt.hash(password, 10);
     
     const stmt = db.prepare(`
-      INSERT INTO users (username, email, password)
-      VALUES (?, ?, ?)
+      INSERT INTO users (tenant_id, username, email, password, role)
+      VALUES (?, ?, ?, ?, ?)
     `);
     
-    const result = stmt.run(username, email, hashedPassword);
+    const result = stmt.run(tenantId, username, email, hashedPassword, role);
     return this.findById(result.lastInsertRowid);
   }
 
