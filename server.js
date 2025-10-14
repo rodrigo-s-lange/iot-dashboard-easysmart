@@ -4,6 +4,7 @@ const helmet = require('helmet');
 const cors = require('cors');
 const mqttService = require('./services/mqttService');
 const authRoutes = require('./routes/auth');
+const deviceRoutes = require('./routes/devices');
 const authenticate = require('./middleware/authMiddleware');
 
 const app = express();
@@ -27,6 +28,7 @@ mqttService.connect();
 
 // Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/devices', deviceRoutes);
 
 // Protected route example
 app.get('/api/protected', authenticate, (req, res) => {
