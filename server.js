@@ -3,6 +3,8 @@ const express = require('express');
 const helmet = require('helmet');
 const cors = require('cors');
 const mqttService = require('./services/mqttService');
+const authRoutes = require('./routes/auth');
+const authenticate = require('./middleware/authMiddleware');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -22,6 +24,14 @@ app.set('views', './views');
 
 // Connect to MQTT broker
 mqttService.connect();
+
+// Routes
+app.use('/api/auth', authRoutes);
+
+// Protected route example
+app.get('/api/protected', authenticate, (req, res) => {
+  res.json({ message: 'Access granted', user: req.user });
+});
 
 // Health check
 app.get('/health', (req, res) => {
