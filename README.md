@@ -1,126 +1,206 @@
-# 🏭 IoT Dashboard - Plataforma Industrial Multi-Tenant
+# 🏭 EasySmart IoT Platform
 
-Sistema completo de gerenciamento de dispositivos IoT com suporte a templates dinâmicos, auto-discovery MQTT e interface web moderna.
+**Plataforma SaaS completa para gerenciamento de dispositivos IoT industriais e residenciais com Machine Learning integrado**
 
-![Version](https://img.shields.io/badge/version-1.2.0-blue)
+![Version](https://img.shields.io/badge/version-1.3.0--beta-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
 ![Node](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen)
+![PostgreSQL](https://img.shields.io/badge/postgresql-16-blue)
+![InfluxDB](https://img.shields.io/badge/influxdb-2.7-orange)
 
 ---
 
-## ✨ Features Implementadas
+## ✨ Visão Geral
 
-### �� Phase 1.2 (Atual - Completo)
+Sistema de gerenciamento IoT multi-tenant com arquitetura híbrida de bancos de dados, suporte a Machine Learning e modelo de negócio SaaS flexível.
 
-#### Backend (Phase 1.2a)
-- ✅ **Sistema de Entidades**: CRUD completo para sensores e atuadores
-- ✅ **6 Templates Predefinidos**: Compressor, Portão, HVAC, Relés, Energia, ESP32
-- ✅ **Auto-Discovery MQTT**: Dispositivos se registram automaticamente
-- ✅ **Multi-Tenant**: Isolamento completo entre clientes
-- ✅ **Autenticação JWT**: Segurança robusta com bcrypt
-- ✅ **API REST**: 14 endpoints documentados
+### 🎯 Diferenciais
 
-#### Frontend (Phase 1.2b)
-- ✅ **Dashboard Moderno**: Cards dinâmicos por tipo de device
-- ✅ **Interface Responsiva**: Bootstrap 5 com design industrial
-- ✅ **Controle Real-time**: Toggle switches, atualização de valores
-- ✅ **Modal de Criação**: Adicionar devices com preview de entidades
-- ✅ **Status Indicators**: Online/Offline com animação pulse
-- ✅ **Toast Notifications**: Feedback visual de ações
-
-### 🔜 Roadmap
-- 🚧 **Phase 1.3**: Integração MQTT real-time com auto-update
-- 📋 **Phase 1.4**: WebSocket para updates em tempo real
-- 🎨 **Phase 2.0**: Admin Panel para gestão de usuários
-- 🔧 **Phase 2.1**: Customização de templates via UI
-- 📊 **Phase 3.0**: Dashboards personalizados com charts
+- 🔐 **Multi-tenant** com isolamento completo
+- 📊 **Dual Database**: PostgreSQL (relacional) + InfluxDB (time-series)
+- 🤖 **Machine Learning** integrado (TensorFlow.js)
+- 📱 **Templates Dinâmicos** para diversos tipos de dispositivos
+- 🔌 **Auto-Discovery** via MQTT
+- 📈 **Dashboards Inteligentes** com histórico e analytics
+- 💰 **Modelo SaaS** com planos flexíveis
 
 ---
 
 ## 🏗️ Arquitetura
 ```
-iot-dashboard/
-├── config/           # Database & MQTT configs
-├── controllers/      # Business logic (auth, devices, entities)
-├── models/           # Data models (Device, Entity, User, Tenant)
-├── routes/           # API endpoints
-├── services/         # Device templates & MQTT service
-├── middleware/       # Auth, rate limiting, plan validation
-├── views/            # EJS templates (login, register, dashboard)
-├── public/           # Static assets
-│   ├── css/         # Dashboard styles
-│   └── js/          # Frontend logic
-└── scripts/          # Migration, testing, user creation
+┌─────────────────────────────────────────────────────────┐
+│                    CLIENT LAYER                          │
+│  Web Dashboard │ Mobile App (future) │ API Clients      │
+└────────────────────┬────────────────────────────────────┘
+                     │
+┌────────────────────▼────────────────────────────────────┐
+│               APPLICATION LAYER                          │
+│  ┌──────────┐  ┌──────────┐  ┌──────────┐             │
+│  │ Auth API │  │Device API│  │ Data API │             │
+│  └──────────┘  └──────────┘  └──────────┘             │
+│  ┌──────────────────────────────────────┐              │
+│  │   MQTT Service (Mosquitto)            │              │
+│  └──────────────────────────────────────┘              │
+└────────────────────┬────────────────────────────────────┘
+                     │
+┌────────────────────▼────────────────────────────────────┐
+│                  DATA LAYER                              │
+│  ┌─────────────────────┐  ┌──────────────────────┐     │
+│  │   PostgreSQL 16     │  │    InfluxDB 2.7      │     │
+│  ├─────────────────────┤  ├──────────────────────┤     │
+│  │ • Users & Auth      │  │ • Sensor readings    │     │
+│  │ • Tenants & Plans   │  │ • Telemetry data     │     │
+│  │ • Devices metadata  │  │ • Time-series        │     │
+│  │ • Entities config   │  │ • ML training data   │     │
+│  │ • Permissions       │  │ • Analytics          │     │
+│  └─────────────────────┘  └──────────────────────┘     │
+└─────────────────────────────────────────────────────────┘
 ```
+
+### 🔄 Data Flow
+```
+IoT Device (ESP32)
+    │ MQTT Publish
+    ▼
+Mosquitto Broker
+    │
+    ├──► PostgreSQL (device status, metadata)
+    │
+    └──► InfluxDB (sensor readings, telemetry)
+         │
+         ▼
+    TensorFlow.js (ML processing)
+         │
+         ▼
+    Dashboard (real-time charts)
+```
+
+---
+
+## 💰 Modelo de Negócio SaaS
+
+| Plan | Devices | Data Retention | ML Features | Price |
+|------|---------|----------------|-------------|-------|
+| **Free** | 1 (hardware bundle) | 30 dias | ❌ | R$ 0/mês |
+| **Starter** | 5 | 90 dias | ✅ Basic | Sob consulta |
+| **Professional** | 20 | 365 dias | ✅ Intermediate | Sob consulta |
+| **Industrial** | Ilimitado | Indefinido | ✅ Advanced + Edge | Sob consulta |
+
+### 📦 Hardware com Plano Free
+
+Dispositivos vendidos com **1 ano de plano gratuito incluído**:
+- ESP32 Generic Devices
+- Compressor Monitor Industrial
+- Outros dispositivos IoT da linha EasySmart
+
+---
+
+## 🎯 Features Implementadas
+
+### ✅ Phase 1.2 - Dashboard Básico (Completo)
+
+**Backend:**
+- ✅ Autenticação JWT com bcrypt
+- ✅ Multi-tenant com isolamento
+- ✅ Sistema de entidades (CRUD)
+- ✅ 6 templates predefinidos
+- ✅ API REST completa (14 endpoints)
+- ✅ Rate limiting e segurança
+
+**Frontend:**
+- ✅ Dashboard moderno responsivo
+- ✅ Cards dinâmicos por tipo
+- ✅ Controle de switches em tempo real
+- ✅ Modal de criação de devices
+- ✅ Status indicators (online/offline)
+- ✅ Toast notifications
+
+### 🚧 Phase 1.3 - Database Migration (Em Progresso)
+
+- [ ] PostgreSQL setup via Docker
+- [ ] InfluxDB setup via Docker
+- [ ] Migration: SQLite → PostgreSQL
+- [ ] MQTT → InfluxDB pipeline
+- [ ] Retention policies por plano
+- [ ] Backup automation
+
+### 📋 Roadmap
+
+**Phase 1.4 - Smart Dashboards**
+- Historical data visualization
+- Chart.js/Plotly integration
+- Real-time charts (WebSocket)
+- CSV export functionality
+- Custom date range filters
+
+**Phase 2.0 - Machine Learning**
+- TensorFlow.js integration
+- Anomaly detection models
+- Predictive maintenance alerts
+- Pattern recognition
+- Model training pipeline
+
+**Phase 2.1 - Admin Panel**
+- User management interface
+- Plan management
+- Billing integration
+- Usage analytics
+- Device provisioning
+
+**Phase 3.0 - Advanced Features**
+- Mobile app (React Native)
+- Custom widgets marketplace
+- Third-party integrations
+- Advanced ML edge computing
 
 ---
 
 ## 🚀 Quick Start
 
 ### Pré-requisitos
+
+- Docker & Docker Compose
 - Node.js >= 18.0.0
-- SQLite3
-- Mosquitto MQTT Broker (opcional para MQTT features)
+- Git
 
 ### Instalação
 ```bash
-# Clone o repositório
+# 1. Clone o repositório
 git clone https://github.com/rodrigo-s-lange/iot-dashboard-easysmart.git
 cd iot-dashboard-easysmart
 
-# Instalar dependências
-npm install
-
-# Configurar variáveis de ambiente
+# 2. Configurar variáveis de ambiente
 cp .env.example .env
 nano .env
+
+# 3. Subir stack completa via Docker
+docker-compose up -d
+
+# 4. Executar migrations
+docker exec iot-dashboard npm run migrate
+
+# 5. Criar primeiro usuário
+docker exec iot-dashboard npm run create-user
+
+# 6. Acessar
+# http://localhost:3000
 ```
 
-### Configuração Inicial
-
-**1. Executar migrations:**
+### Configuração Mínima `.env`
 ```bash
-node scripts/migrate.js
-```
+# PostgreSQL
+POSTGRES_PASSWORD=sua_senha_super_segura
 
-**2. Criar primeiro usuário:**
-```bash
-node scripts/create-user.js
-```
+# InfluxDB
+INFLUXDB_PASSWORD=outra_senha_segura
+INFLUXDB_TOKEN=seu_token_influxdb
 
-Isso criará:
-- **Username**: `testuser`
-- **Password**: `test123`
-- **Tenant**: Test Tenant (Premium)
+# JWT
+JWT_SECRET=chave_jwt_secreta_minimo_32_chars
 
-**3. Iniciar servidor:**
-```bash
-npm start
-```
-
-**4. Acessar:** http://localhost:3000
-
----
-
-## 🎨 Screenshots
-
-### Dashboard Principal
-```
-┌──────────────────────────────────────────────────────┐
-│ 🏭 EasySmart IoT              [Premium] 🚪 Sair     │
-├──────────────────────────────────────────────────────┤
-│ Meus Dispositivos              [➕ Adicionar] [🔄]   │
-│ 2 de 5 dispositivos                                  │
-│                                                      │
-│ ┌──────────────┐  ┌──────────────┐  ┌────────────┐ │
-│ │🏭 Compressor │  │🚪 Portão     │  │🌡️ HVAC    │ │
-│ │🟢 Online     │  │🔴 Offline    │  │🟢 Online   │ │
-│ │─────────────│  │─────────────│  │────────────│ │
-│ │🔌 Relé: ON  │  │🔓 Abrir     │  │Temp: 24°C │ │
-│ │🌡️ 85°C      │  │🔒 Fechar    │  │Umid: 60%  │ │
-│ │📊 120 PSI   │  │✅ Aberto    │  │CO2: 450ppm│ │
-│ └──────────────┘  └──────────────┘  └────────────┘ │
-└──────────────────────────────────────────────────────┘
+# MQTT (se usar Mosquitto)
+MQTT_USER=devices
+MQTT_PASS=senha_mqtt
 ```
 
 ---
@@ -129,7 +209,8 @@ npm start
 
 ### Authentication
 ```
-POST   /api/auth/login       - Login (retorna JWT)
+POST   /api/auth/login       - Login e obtenção de JWT
+GET    /api/auth/me          - Informações do usuário logado
 ```
 
 ### Devices
@@ -137,60 +218,35 @@ POST   /api/auth/login       - Login (retorna JWT)
 GET    /api/devices/templates    - Listar templates disponíveis
 GET    /api/devices              - Listar devices do usuário
 POST   /api/devices              - Criar device (auto-cria entities)
-GET    /api/devices/:id          - Obter device com entidades
+GET    /api/devices/:id          - Obter device específico
 PUT    /api/devices/:id          - Atualizar device
-DELETE /api/devices/:id          - Deletar device (cascade entities)
+DELETE /api/devices/:id          - Deletar device (cascade)
 ```
 
 ### Entities
 ```
-GET    /api/devices/:id/entities           - Listar entidades
-POST   /api/devices/:id/entities           - Criar entidade
-POST   /api/devices/:id/entities/bulk      - Criar múltiplas
-PATCH  /api/devices/:id/entities/:eid/value - Atualizar valor
-PUT    /api/entities/:id                   - Atualizar config
-DELETE /api/entities/:id                   - Deletar entidade
+GET    /api/devices/:id/entities               - Listar entidades
+POST   /api/devices/:id/entities               - Criar entidade
+POST   /api/devices/:id/entities/bulk          - Criar múltiplas
+PATCH  /api/devices/:id/entities/:eid/value    - Atualizar valor
+PUT    /api/entities/:id                       - Atualizar config
+DELETE /api/entities/:id                       - Deletar entidade
 ```
 
-### Exemplo: Criar Device com Template
-```bash
-curl -X POST http://localhost:3000/api/devices \
-  -H "Authorization: Bearer $TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "name": "Compressor Principal",
-    "device_id": "COMP_001",
-    "type": "compressor_monitor",
-    "location": "Sala de Máquinas",
-    "discovery_mode": "template"
-  }'
+### Time-Series Data (Phase 1.3+)
 ```
-
-**Response:**
-```json
-{
-  "success": true,
-  "device": {
-    "id": 1,
-    "name": "Compressor Principal",
-    "status": "offline",
-    "entities_count": 6
-  },
-  "entities": [
-    {"entity_id": "relay_main", "type": "switch", "name": "Relé Principal"},
-    {"entity_id": "temp_oil", "type": "sensor", "name": "Temperatura Óleo", "unit": "°C"},
-    ...
-  ]
-}
+GET    /api/data/:deviceId/:entityId?start=&end=  - Query histórico
+GET    /api/data/:deviceId/:entityId/latest       - Último valor
+POST   /api/data/export                           - Exportar CSV
 ```
 
 ---
 
-## 🎨 Templates Disponíveis
+## 🎨 Device Templates
 
-| Template | Modo | Entidades | Descrição |
-|----------|------|-----------|-----------|
-| `compressor_monitor` | Hybrid | 1 switch + 5 sensors | Monitor industrial RS485 |
+| Template | Discovery Mode | Entidades | Uso |
+|----------|----------------|-----------|-----|
+| `compressor_monitor` | Hybrid | 1 switch + 5 sensors | Monitoramento industrial RS485 |
 | `gate_controller` | Template | 2 switches + 2 binary_sensors | Controle de portão residencial |
 | `hvac_sensor` | Auto | 3 sensors | Temperatura/Umidade/CO2 |
 | `relay_board` | Template | 4 switches | Placa de relés genérica |
@@ -203,32 +259,24 @@ curl -X POST http://localhost:3000/api/devices \
 
 ### Estrutura de Tópicos
 ```
-devices/{DEVICE_ID}/{ENTITY_ID}/state    - Publica estado atual
-devices/{DEVICE_ID}/{ENTITY_ID}/set      - Recebe comandos
-devices/{DEVICE_ID}/discovery            - Auto-discovery payload
 devices/{DEVICE_ID}/status               - LWT (online/offline)
+devices/{DEVICE_ID}/discovery            - Auto-discovery payload
+devices/{DEVICE_ID}/{ENTITY_ID}/state    - Estado atual
+devices/{DEVICE_ID}/{ENTITY_ID}/set      - Comando de controle
 ```
 
-### Exemplo ESP32 (PlatformIO)
+### Exemplo ESP32 (Arduino)
 ```cpp
 #include <WiFi.h>
 #include <PubSubClient.h>
 
-const char* mqtt_server = "server.local";
 const char* device_id = "ESP32_COMP_01";
-
-WiFiClient espClient;
-PubSubClient client(espClient);
+const char* mqtt_server = "server.local";
 
 void setup() {
-  // Conectar WiFi
-  WiFi.begin(ssid, password);
-  
-  // Conectar MQTT
-  client.setServer(mqtt_server, 1883);
   client.connect(device_id);
   
-  // Enviar discovery
+  // Auto-discovery
   String discovery = R"({
     "entities": [
       {"entity_id": "relay_1", "type": "switch", "name": "Relé 1"},
@@ -239,11 +287,9 @@ void setup() {
 }
 
 void loop() {
-  // Publicar temperatura
   float temp = readTemperature();
   String payload = String(temp);
   client.publish("devices/ESP32_COMP_01/temp/state", payload.c_str());
-  
   delay(5000);
 }
 ```
@@ -252,34 +298,116 @@ void loop() {
 
 ## 🔐 Segurança
 
-- ✅ Senhas hashadas com bcrypt (10 rounds)
+- ✅ Passwords com bcrypt (10 rounds)
 - ✅ JWT com expiração de 1h
-- ✅ Rate limiting: 5 tentativas de login / 15min
+- ✅ Rate limiting (5 login attempts / 15min)
 - ✅ CORS configurado
-- ✅ Isolamento multi-tenant rigoroso
-- ✅ Validação de MAC address em devices
-- ✅ Plan limits enforcement
-- ✅ HTTPS via Cloudflare Tunnel (produção)
+- ✅ Multi-tenant row-level security
+- ✅ SQL injection protection (prepared statements)
+- ✅ XSS prevention
+- ✅ HTTPS via Cloudflare Tunnel
 
 ---
 
 ## 👥 Gerenciamento de Usuários
 
-### Criar Usuário via Script (Recomendado)
+### Via Script (Recomendado)
 ```bash
-# Editar script para customizar
-nano scripts/create-user.js
+# Criar usuário com prompt interativo
+npm run create-user
 
-# Executar
+# Ou diretamente
 node scripts/create-user.js
 ```
 
-### Criar Usuário via SQL (Avançado)
+### Via SQL (Avançado)
 ```bash
-# Gerar hash da senha primeiro
-node -e "const bcrypt = require('bcryptjs'); bcrypt.hash('suasenha', 10).then(console.log)"
+# Gerar hash
+node -e "require('bcryptjs').hash('senha123', 10).then(console.log)"
 
-# Inserir no banco
-sqlite3 data/database.sqlite << EOF
-INSERT INTO users (tenant_id, username, email, password, role) 
-VALUES (1, 'novousuario', 'email@example.com', 'HASH_AQUI', 'owner');
+# Inserir
+psql iot_dashboard -c "INSERT INTO users (tenant_id, username, email, password) VALUES (1, 'user', 'email@test.com', 'HASH');"
+```
+
+---
+
+## 📚 Documentação Adicional
+
+- [Architecture](docs/ARCHITECTURE.md) - Arquitetura detalhada
+- [InfluxDB Setup](docs/INFLUXDB_SETUP.md) - Guia de configuração time-series
+- [ML Features](docs/ML_FEATURES.md) - Machine Learning integration
+- [Business Model](docs/BUSINESS_MODEL.md) - Modelo de negócio SaaS
+- [Continuity Guide](docs/CONTINUITY_GUIDE.md) - Status e roadmap
+- [Testing Guide](docs/TESTING_GUIDE.md) - Testes e validação
+
+---
+
+## 🐳 Docker Services
+```
+postgres-iot        - PostgreSQL 16
+influxdb-iot        - InfluxDB 2.7
+iot-dashboard       - Node.js application
+mosquitto           - MQTT broker
+(existing services: home-assistant, esphome, portainer)
+```
+
+### Resource Usage
+
+| Service | RAM | Disk | CPU |
+|---------|-----|------|-----|
+| PostgreSQL | 100-200 MB | 1-5 GB | Low |
+| InfluxDB | 200-500 MB | 5-50 GB | Medium |
+| Dashboard | 50-100 MB | 500 MB | Low |
+
+---
+
+## 🧪 Testing
+```bash
+# Unit tests
+npm test
+
+# Integration tests
+npm run test:integration
+
+# Test entities system
+npm run test:entities
+
+# API tests (requires running server)
+npm run test:api
+```
+
+---
+
+## 📝 Licença
+
+MIT License - veja [LICENSE](LICENSE)
+
+---
+
+## �� Autores
+
+- **Rodrigo S. Lange** - Founder & Lead Developer
+- Powered by **Claude AI** (Anthropic)
+
+---
+
+## 🙏 Agradecimentos
+
+- Home Assistant - Entity system inspiration
+- InfluxDB - Time-series excellence
+- PostgreSQL - Rock-solid relational DB
+- Mosquitto - Reliable MQTT broker
+- TensorFlow.js - ML at the edge
+
+---
+
+**Version**: 1.3.0-beta  
+**Last Update**: 15 Outubro 2025  
+**Status**: 🚧 Phase 1.3 in progress (PostgreSQL + InfluxDB migration)  
+**Production Ready**: ⚠️ Not yet (MVP stage)
+
+---
+
+📧 **Contact**: [rodrigo.s.lange@example.com](mailto:rodrigo.s.lange@example.com)  
+🌐 **Website**: https://easysmart.com.br  
+🐙 **GitHub**: https://github.com/rodrigo-s-lange/iot-dashboard-easysmart
