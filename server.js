@@ -1,68 +1,56 @@
+// server.js
 require('dotenv').config();
 const express = require('express');
-const helmet = require('helmet');
-const cors = require('cors');
-const mqttService = require('./services/mqttService');
+const path = require('path');
 const authRoutes = require('./routes/auth');
 const deviceRoutes = require('./routes/devices');
-const authenticate = require('./middleware/authMiddleware');
+const entityRoutes = require('./routes/entities');
+const webRoutes = require('./routes/web');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Security middleware
-app.use(helmet());
-app.use(cors());
+// Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-// Static files
-app.use(express.static('public'));
+app.use(express.static(path.join(__dirname, 'public')));
 
 // View engine
 app.set('view engine', 'ejs');
-app.set('views', './views');
+app.set('views', path.join(__dirname, 'views'));
 
-// Connect to MQTT broker
-mqttService.connect();
-
-// Routes
+// API Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/devices', deviceRoutes);
+app.use('/api', entityRoutes);
 
-// Protected route example
-app.get('/api/protected', authenticate, (req, res) => {
-  res.json({ message: 'Access granted', user: req.user });
-});
+// Web Routes
+app.use('/', webRoutes);
 
 // Health check
 app.get('/health', (req, res) => {
   res.json({ 
     status: 'ok', 
-    mqtt: mqttService.client?.connected ? 'connected' : 'disconnected',
-    timestamp: new Date().toISOString() 
+    timestamp: new Date().toISOString(),
+    version: '1.2.0'
   });
 });
 
-// Start server
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
+// 404 handler
+app.use((req, res) => {
+  res.status(404).json({ error: 'Route not found' });
 });
 
-// Graceful shutdown
-process.on('SIGTERM', () => {
-  console.log('SIGTERM received, closing server...');
-  mqttService.disconnect();
-  process.exit(0);
+// Error handler
+app.use((err, req, res, next) => {
+  console.error('Server error:', err);
+  res.status(500).json({ error: 'Internal server error' });
+});
+
+app.listen(PORT, () => {
+  console.log(`🚀 IoT Dashboard running on http://localhost:${PORT}`);
+  console.log(`📊 Environment: ${process.env.NODE_ENV || 'development'}`);
+  console.log(`✅ Entity System: Enabled`);
 });
 
 module.exports = app;
-
-// ---- Auto-mounted web routes (added by assistant) ----
-try {
-  const webRoutes = require('./routes/web');
-  if (webRoutes) app.use('/', webRoutes);
-} catch (err) {
-  console.error('Warning: failed adding web routes:', err.message);
-}
-// -----------------------------------------------------
