@@ -148,3 +148,6 @@ vite.config.ts.timestamp-*
 
 # Test files
 test-*.js
+README.md.backup
+NEXT_SESSION_PROMPT.md
+data/*.sqlite*
