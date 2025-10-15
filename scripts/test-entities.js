@@ -16,13 +16,13 @@ async function runTests() {
     });
     console.log('');
 
-    // 2. Criar device de teste (Compressor Monitor)
+    // 2. Criar device de teste usando createFromObject
     console.log('🏭 Creating test device: Compressor Monitor');
     
-    // Assumir user_id = 1 (ajustar conforme necessário)
+    // AJUSTE: Usar userId real do seu sistema
     const userId = 1;
 
-    const device = await Device.create({
+    const device = await Device.createFromObject({
       name: 'Compressor Teste',
       device_id: 'TEST_COMP_01',
       type: 'compressor_monitor',
@@ -81,7 +81,8 @@ async function runTests() {
     }
 
     console.log('✅ All tests passed!\n');
-    console.log('⚠️  Remember to delete test device from database\n');
+    console.log(`⚠️  Test device created with ID: ${device.id}`);
+    console.log('   You can delete it with: DELETE FROM devices WHERE id = ' + device.id + ';\n');
 
   } catch (error) {
     console.error('❌ Test failed:', error.message);
