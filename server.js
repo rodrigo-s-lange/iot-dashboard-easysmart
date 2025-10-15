@@ -57,3 +57,12 @@ process.on('SIGTERM', () => {
 });
 
 module.exports = app;
+
+// ---- Auto-mounted web routes (added by assistant) ----
+try {
+  const webRoutes = require('./routes/web');
+  if (webRoutes) app.use('/', webRoutes);
+} catch (err) {
+  console.error('Warning: failed adding web routes:', err.message);
+}
+// -----------------------------------------------------
