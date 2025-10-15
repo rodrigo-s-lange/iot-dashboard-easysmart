@@ -63,8 +63,8 @@ exports.createDevice = async (req, res) => {
       });
     }
 
-    // Criar device
-    const device = await Device.create(req.body, req.userId);
+    // Criar device usando novo método
+    const device = await Device.createFromObject(req.body, req.userId);
 
     // Se usar template, criar entidades predefinidas
     if (device.discovery_mode === 'template' || device.discovery_mode === 'hybrid') {
@@ -75,7 +75,6 @@ exports.createDevice = async (req, res) => {
         }
       } catch (error) {
         console.error('Failed to create template entities:', error);
-        // Continuar mesmo se falhar (device já foi criado)
       }
     }
 
@@ -149,7 +148,7 @@ exports.updateDevice = async (req, res) => {
     }
 
     // Atualizar device
-    const updated = await Device.update(id, req.body);
+    const updated = Device.update(id, device.tenant_id, req.body);
 
     res.json({
       success: true,
@@ -179,7 +178,7 @@ exports.deleteDevice = async (req, res) => {
       return res.status(403).json({ error: 'Access denied' });
     }
 
-    await Device.delete(id);
+    await Device.delete(id, device.tenant_id);
 
     res.json({
       success: true,
