@@ -32,12 +32,10 @@ class Device {
 
   /**
    * Criar device (nova assinatura compatível com entityController)
-   * Aceita objeto com campos
    */
   static async createFromObject(data, userId) {
-    // Buscar tenantId do usuário
-    const User = require('./User');
-    const user = User.findById(userId);
+    // Buscar tenantId do usuário DIRETAMENTE (sem User.findById)
+    const user = db.prepare('SELECT * FROM users WHERE id = ?').get(userId);
     
     if (!user) {
       throw new Error('User not found');
@@ -107,8 +105,8 @@ class Device {
    * Buscar devices de um usuário (para entityController)
    */
   static findByUserId(userId) {
-    const User = require('./User');
-    const user = User.findById(userId);
+    // Buscar tenant_id do usuário diretamente
+    const user = db.prepare('SELECT tenant_id FROM users WHERE id = ?').get(userId);
     
     if (!user) {
       return [];
@@ -202,8 +200,8 @@ class Device {
    * Verificar se usuário pode adicionar device (para entityController)
    */
   static async canAddDevice(userId) {
-    const User = require('./User');
-    const user = User.findById(userId);
+    // Buscar tenant_id do usuário diretamente
+    const user = db.prepare('SELECT tenant_id FROM users WHERE id = ?').get(userId);
     
     if (!user) {
       throw new Error('User not found');
