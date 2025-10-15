@@ -26,6 +26,7 @@ INSERT OR IGNORE INTO plans (name, max_devices, price, features) VALUES
   ('premium', -1, 49.90, '{"mqtt":true,"dashboard":true,"support":"24/7","history":"unlimited","api":true}');
 
 -- Users (agora com tenant_id)
+DROP TABLE IF EXISTS users;
 CREATE TABLE users (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   tenant_id INTEGER NOT NULL,
