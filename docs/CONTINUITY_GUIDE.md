@@ -369,3 +369,156 @@ When starting a new session, verify:
 
 **End of Continuity Guide**  
 **Next Session Goal:** Implement device management UI (add/edit/delete)
+
+---
+
+## ✅ Phase 1.2a - Sistema de Entidades (COMPLETO)
+
+**Data de Conclusão**: 15/10/2025
+
+### Implementado
+
+#### Backend Completo
+- ✅ Tabela `entities` com migration script
+- ✅ Model `Entity.js` com CRUD operations
+- ✅ Model `Device.js` adaptado para multi-tenant
+- ✅ 6 Templates predefinidos em `deviceTemplates.js`
+- ✅ Controller `entityController.js` com validações
+- ✅ Routes `/api/devices/:id/entities` e `/api/entities/:id`
+- ✅ Integração com sistema multi-tenant existente
+
+#### Database Schema
+```sql
+entities (
+  id, device_id, entity_id, entity_type,
+  name, value, unit, icon, config,
+  discovery_mode, mqtt_topic,
+  last_updated, created_at
+)
+```
+
+#### Funcionalidades
+- ✅ CRUD completo de entidades
+- ✅ Suporte a 5 tipos: switch, sensor, number, text, binary_sensor
+- ✅ Auto-discovery via MQTT (preparado)
+- ✅ Templates fixos por tipo de device
+- ✅ Modo híbrido (template + discovery)
+- ✅ Validação de MAC address
+- ✅ Plan limits (Free: 1 device, Premium: 5)
+- ✅ Locked entities (não podem ser deletadas)
+
+#### Testes
+- ✅ Script `test-entities.js` validando workflow completo
+- ✅ 6 templates funcionando
+- ✅ Device creation com entities automáticas
+- ✅ Value updates funcionando
+- ✅ MQTT topic lookup funcionando
+
+### Commits (Total: 13)
+```bash
+feat: add entities table schema with migration script
+feat: implement Entity model with CRUD operations
+feat: add device template system with 6 predefined types
+feat: add entity controller with full CRUD endpoints
+feat: update device controller with template integration
+feat: add entity routes with full CRUD endpoints
+feat: update device routes with templates endpoint
+feat: integrate entity routes into server
+test: add entity system integration test script
+fix: remove DROP TABLE from schema to preserve data
+fix: check if database exists before running schema
+fix: use direct SQL queries instead of User.findById
+```
+
+### Arquivos Criados/Modificados
+
+**Novos:**
+- `models/Entity.js`
+- `services/deviceTemplates.js`
+- `controllers/entityController.js`
+- `routes/entities.js`
+- `scripts/migrate.js`
+- `scripts/test-entities.js`
+
+**Modificados:**
+- `models/Device.js` - Compatibilidade com entities
+- `controllers/deviceController.js` - Template integration
+- `routes/devices.js` - Novos endpoints
+- `server.js` - Entity routes registration
+- `config/database.js` - Schema initialization fix
+- `config/databaseSchema.sql` - Removed DROP TABLE
+
+---
+
+## 🎯 Phase 1.2b - Dashboard UI (PRÓXIMO)
+
+**Objetivo**: Interface visual para gerenciamento de devices
+
+### Tarefas
+
+#### 1. Renderização Dinâmica de Cards
+- [ ] Atualizar `views/dashboard.ejs`
+  - Substituir JSON por grid Bootstrap
+  - Card header com nome/status/localização
+  - Card body com entidades renderizadas
+  - Card footer com ações (editar/deletar)
+
+#### 2. Templates Frontend
+- [ ] Criar `public/js/templates/`
+  - `compressor.js` - Render de monitor industrial
+  - `gate.js` - Render de controle de portão
+  - `sensor.js` - Render genérico de sensores
+  - `switch.js` - Render genérico de switches
+
+#### 3. Dashboard JavaScript
+- [ ] Criar `public/js/dashboard.js`
+  - `loadDevices()` - Buscar e renderizar
+  - `addDevice()` - Modal de criação
+  - `editDevice(id)` - Modal de edição
+  - `deleteDevice(id)` - Confirmação
+  - `toggleEntity(deviceId, entityId)` - Toggle switch
+  - `updateEntityValue(deviceId, entityId, value)` - Update sensor
+
+#### 4. Modais Bootstrap
+- [ ] Modal "Adicionar Device"
+  - Dropdown de templates
+  - Campos: nome, device_id, localização
+  - Dropdown discovery_mode
+  - Preview de entidades do template
+
+#### 5. Real-time Updates (Opcional)
+- [ ] WebSocket ou polling
+- [ ] Auto-update de valores
+- [ ] Notificações de status
+
+### Estimativa
+- **Tempo**: 4-6 horas
+- **Complexidade**: Média
+- **Dependências**: Phase 1.2a ✅
+
+---
+
+## 📊 Estatísticas do Projeto
+
+**Linhas de Código:**
+- Backend: ~2.500 linhas
+- Frontend: ~500 linhas
+- Testes: ~200 linhas
+- Total: ~3.200 linhas
+
+**Arquivos:**
+- Models: 5
+- Controllers: 3
+- Routes: 4
+- Services: 2
+- Scripts: 3
+- Views: 4
+
+**API Endpoints:** 14  
+**Templates:** 6  
+**Commits:** 13 (Phase 1.2a)
+
+---
+
+**Última Atualização**: 15/10/2025 11:50 BRT  
+**Próxima Sessão**: Dashboard UI (Phase 1.2b)
