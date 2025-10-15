@@ -1,17 +1,32 @@
+// routes/devices.js
 const express = require('express');
-const DeviceController = require('../controllers/deviceController');
-const authenticate = require('../middleware/authMiddleware');
-const { checkDeviceLimit } = require('../middleware/checkPlanLimits');
-
 const router = express.Router();
+const deviceController = require('../controllers/deviceController');
+const authMiddleware = require('../middleware/authMiddleware');
 
-// Todas rotas requerem autenticação
-router.use(authenticate);
+// Todas as rotas requerem autenticação
+router.use(authMiddleware);
 
-router.get('/', DeviceController.list);
-router.post('/', checkDeviceLimit, DeviceController.create);
-router.get('/:id', DeviceController.getOne);
-router.put('/:id', DeviceController.update);
-router.delete('/:id', DeviceController.delete);
+/**
+ * Rotas de Devices
+ */
+
+// Listar templates disponíveis
+router.get('/templates', deviceController.getTemplates);
+
+// Listar devices do usuário
+router.get('/', deviceController.getDevices);
+
+// Criar novo device
+router.post('/', deviceController.createDevice);
+
+// Obter device específico (com entidades)
+router.get('/:id', deviceController.getDevice);
+
+// Atualizar device
+router.put('/:id', deviceController.updateDevice);
+
+// Deletar device
+router.delete('/:id', deviceController.deleteDevice);
 
 module.exports = router;
