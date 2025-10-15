@@ -151,3 +151,4 @@ test-*.js
 README.md.backup
 NEXT_SESSION_PROMPT.md
 data/*.sqlite*
+scripts/setup-test-user.js
